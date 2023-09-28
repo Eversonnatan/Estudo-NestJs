@@ -1,5 +1,7 @@
-import { Body, Controller, Post , Get, Param, Put, Patch, Delete} from "@nestjs/common";
+import { Body, Controller, Post , Get, Param, Put, Patch, Delete, ParseIntPipe} from "@nestjs/common";
 import { CreateUserDTO } from "./dto/create-user.dto";
+import { UpdatePutUserDTO } from "./dto/update-put-user.dto";
+import { UpdatePatchUserDTO } from "./dto/update-patch-user.dto";
  
 
 @Controller('users')
@@ -16,34 +18,35 @@ export class UserController {
     }
     //metodo de leitura de usuario especifico
     @Get(':id')
-    async show(@Param() params){
-        return {user:{}, params}
+    async show(@Param('id',ParseIntPipe) id:number ){
+        return {user:{}, id}
     }
 
     //Metodo de alteração total
     @Put(':id')
-    async update(@Body() body, @Param() params ) {
+    async update(@Body() {email,name,password}: UpdatePutUserDTO, @Param('id',ParseIntPipe) id: number) {
         return {
             method: 'put',
-            body,
-            params
+            email,name,password,
+            id
         }
 
     }
     //Metodo de alteração particial 
     @Patch(':id')
-    async updatePartial(@Body() body, @Param() params){
+    async updatePartial(@Body() {email,name,password}: UpdatePatchUserDTO, @Param('id',ParseIntPipe) id: number){
         return {
             method: 'patch',
-            body,
-            params
+            email,name,password,
+            id
         }   
     }
     //Metodo de Deletar
     @Delete(':id')
-    async delete(@Param() params ){
+    //conversão de string para numero
+    async delete(@Param('id',ParseIntPipe) id: number){
         return {
-            params
+            id
         }
     }
 }
